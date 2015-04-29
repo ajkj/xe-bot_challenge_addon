@@ -13,7 +13,6 @@ if( $called_position ==='before_module_init')
     if($this->act === 'procBot_challengeTest')
     {
 
-
         // 이미 인증이 되어 있거나 , 세션이 만들어 지지 않을 상태에서 Bot Challenge를 하면 끝낸다.
         if(isset($_SESSION[$self_addon_name]->status) === false || $_SESSION[$self_addon_name]->status === true){
             Context::close();
@@ -72,7 +71,7 @@ if( $called_position ==='before_module_init')
     {
 
         context::close();
-        http_response_code(500);
+        header('X-ERROR: BTAS', true, 500);
         echo('<h1> 500 Internal ERROR XE</h1>');
         exit('');
 
@@ -181,12 +180,14 @@ elseif($called_position === 'before_display_content')
 
 
         $default_url = Context::getDefaultUrl();
+        $backup_url = $default_url.'addons/bot_challenge/backup.js';
 
+/*
 
-        /*
             $js = <<<EOT
         <script>
         (function(){
+        if(typeof CryptoJS !== 'object'){ document.write('<script src="./addons/bot_challenge/backup.js"></script>'); }
         "use strict";
         var r = CryptoJS.enc.$what_return_type_string.stringify(CryptoJS.Hmac$what_hash_string("$what_challenge","$addon_info->site_secret"));
         var s = {
@@ -200,11 +201,11 @@ elseif($called_position === 'before_display_content')
         })();
         </script>
         EOT;
-        */
-        // 한줄로 압축해서 보내기
 
+        // 한줄로 압축해서 보내기
+*/
         $js = <<<EOT
-	    <script>jQuery.ajax('$default_url', s = {data : jQuery.param({ 'act' : 'procBot_challengeTest', 'challenge' : CryptoJS.enc.$what_return_type_string.stringify(CryptoJS.Hmac$what_hash_string("$what_challenge","$addon_info->site_secret"))}),dataType  : 'json',type : 'post',headers :{ 'X-CSRF-PROTECT' : '$csrf'}});</script>
+	    <script> if(typeof CryptoJS !=='object'){document.write(decodeURI('%3Cscript%20src=%22$backup_url%22%3E%3C/script%3E'));};</script><script>jQuery.ajax('$default_url', s = {data : jQuery.param({ 'act' : 'procBot_challengeTest', 'challenge' : CryptoJS.enc.$what_return_type_string.stringify(CryptoJS.Hmac$what_hash_string("$what_challenge","$addon_info->site_secret"))}),dataType  : 'json',type : 'post',headers :{ 'X-CSRF-PROTECT' : '$csrf'}});</script>
 EOT;
         Context::loadFile(array('https://cdn.jsdelivr.net/crypto-js/3.1.2/components/core-min.js','head','',1));
         Context::loadFile(array('https://cdn.jsdelivr.net/crypto-js/3.1.2/components/enc-base64-min.js','head','',1));
@@ -214,6 +215,8 @@ EOT;
         Context::loadFile(array('https://cdn.jsdelivr.net/crypto-js/3.1.2/rollups/hmac-sha512.js','head','',1));
         Context::addHtmlHeader($js);
     }
+
+
 
 
 
