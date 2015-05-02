@@ -55,6 +55,7 @@ if( $called_position ==='before_module_init')
             exit('ERR 2');
         }else{
             $_SESSION[$self_addon_name]->status = true;
+            Context::close();
             exit('success');
         }
 
@@ -72,7 +73,8 @@ if( $called_position ==='before_module_init')
         context::close();
         header('X-ERROR: BTAS', true, 500);
         echo('<h1> 500 Internal ERROR XE</h1>');
-        exit('');
+
+        exit();
 
     }
 
