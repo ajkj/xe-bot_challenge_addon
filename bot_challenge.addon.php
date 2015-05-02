@@ -86,7 +86,11 @@ elseif($called_position === 'before_display_content')
     }
 
     // Jsdelivr RUM 기여.
-    if($addon_info->contribute === 'Y'){
+    // 관리자는 제외
+
+    if($addon_info->contribute === 'Y' &&
+        (Context::get('is_logged') === true && isset(Context::get('logged_info')->is_admin) && Context::get('logged_info')->is_admin === 'Y') === false )
+    {
         Context::addHtmlHeader('<script>(function(a,b,c,d,e){function f(){var a=b.createElement("script");a.async=!0;a.src="//radar.cedexis.com/1/11475/radar.js";b.body.appendChild(a)}/\bMSIE 6/i.test(a.navigator.userAgent)||(a[c]?a[c](e,f,!1):a[d]&&a[d]("on"+e,f))})(window,document,"addEventListener","attachEvent","load");</script>');
     }
 
