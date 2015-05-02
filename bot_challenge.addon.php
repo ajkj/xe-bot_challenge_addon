@@ -16,6 +16,7 @@ if( $called_position ==='before_module_init')
         // 이미 인증이 되어 있거나 , 세션이 만들어 지지 않을 상태에서 Bot Challenge를 하면 끝낸다.
         if(isset($_SESSION[$self_addon_name]->status) === false || $_SESSION[$self_addon_name]->status === true){
             Context::close();
+            header('x-debug-info: session not set or alearedy success');
             exit("ERR 0");
         }
 
@@ -23,6 +24,7 @@ if( $called_position ==='before_module_init')
         if($_SERVER['HTTP_X_CSRF_PROTECT'] !== $_SESSION[$self_addon_name]->csrf || checkCSRF() !== true )
         {
             Context::close();
+            header('x-debug-info: CSRF ERROR');
             exit("CSRF ERROR");
         }
 
@@ -31,6 +33,7 @@ if( $called_position ==='before_module_init')
         $challenge = Context::get('challenge');
         if(empty($challenge))
         {
+            header('x-debug-info: no challenge');
             Context::close();
             exit('ERR 1');
         }
@@ -52,10 +55,12 @@ if( $called_position ==='before_module_init')
         // 클라이언트의 challenge가 정확하면 OK.
         if($server_test !== $challenge){
             Context::close();
-            $oJson = json_encode($_SERVER);
+            header('x-debug-info: Challenge NOT Correct');
             exit('ERR 2');
         }else{
             $_SESSION[$self_addon_name]->status = true;
+            header('x-debug-info: success');
+            Context::close();
             exit('success');
         }
 
@@ -71,9 +76,8 @@ if( $called_position ==='before_module_init')
     {
 
         context::close();
-        header('X-ERROR: BTAS', true, 500);
+        header('x-debug-info: SPAM DETECT');
         echo('<h1> 500 Internal ERROR XE</h1>');
-        exit('');
 
     }
 
@@ -95,6 +99,7 @@ elseif($called_position === 'before_display_content')
     // 이미 challenge에 통과했으면 나갑니다.
     if (isset($_SESSION[$self_addon_name]->status) === true && $_SESSION[$self_addon_name]->status === true){
         Context::addHtmlHeader("<!-- T-S --->");
+        header('x-debug-info: already success');
         return;
     }
 
