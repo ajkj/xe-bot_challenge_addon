@@ -52,7 +52,6 @@ if( $called_position ==='before_module_init')
         // 클라이언트의 challenge가 정확하면 OK.
         if($server_test !== $challenge){
             Context::close();
-            $oJson = json_encode($_SERVER);
             exit('ERR 2');
         }else{
             $_SESSION[$self_addon_name]->status = true;
