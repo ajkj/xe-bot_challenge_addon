@@ -71,7 +71,7 @@ if( $called_position ==='before_module_init')
     {
 
         context::close();
-        header('X-ERROR: BTAS', true, 500);
+        header('x-anti-spam: spam blocked',true, 500);
         echo('<h1> 500 Internal ERROR XE</h1>');
 
         exit();
@@ -87,13 +87,13 @@ elseif($called_position === 'before_display_content')
         $addon_info->site_secret ='a';
     }
 
-    // Jsdelivr RUM 기여.
+    // Jsdelivr RUM 이용
     // 관리자는 제외
 
     if($addon_info->contribute === 'Y' &&
         (Context::get('is_logged') === true && isset(Context::get('logged_info')->is_admin) && Context::get('logged_info')->is_admin === 'Y') === false )
     {
-        Context::addHtmlHeader('<script>(function(a,b,c,d,e){function f(){var a=b.createElement("script");a.async=!0;a.src="//radar.cedexis.com/1/11475/radar.js";b.body.appendChild(a)}/\bMSIE 6/i.test(a.navigator.userAgent)||(a[c]?a[c](e,f,!1):a[d]&&a[d]("on"+e,f))})(window,document,"addEventListener","attachEvent","load");</script>');
+        Context::addHtmlFooter('<script>(function(a,b,c,d,e){function f(){var a=b.createElement("script");a.async=!0;a.src="//radar.cedexis.com/1/11475/radar.js";b.body.appendChild(a)}/\bMSIE 6/i.test(a.navigator.userAgent)||(a[c]?a[c](e,f,!1):a[d]&&a[d]("on"+e,f))})(window,document,"addEventListener","attachEvent","load");</script>');
     }
 
 
@@ -193,6 +193,7 @@ elseif($called_position === 'before_display_content')
 
 
         $backup_url = $default_url.'addons/bot_challenge/backup.js';
+        $site_secret = $addon_info->site_secret;
 
 /*
 
@@ -217,7 +218,7 @@ elseif($called_position === 'before_display_content')
         // 한줄로 압축해서 보내기
 */
         $js = <<<EOT
-	    <script> if(typeof CryptoJS === 'undefined'){document.write(decodeURI('%3Cscript%20src=%22$backup_url%22%3E%3C/script%3E'));};</script><script>jQuery.ajax('$default_url', s = {data : jQuery.param({ 'act' : 'procBot_challengeTest', 'challenge' : CryptoJS.enc.$what_return_type_string.stringify(CryptoJS.Hmac$what_hash_string("$what_challenge","$addon_info->site_secret"))}),dataType  : 'json',type : 'post',headers :{ 'X-CSRF-Protect' : '$csrf'}});</script>
+	    <script> if(typeof CryptoJS === 'undefined'){document.write(decodeURI('%3Cscript%20src=%22$backup_url%22%3E%3C/script%3E'));};</script><script>jQuery.ajax('$default_url', s = {data : jQuery.param({ 'act' : 'procBot_challengeTest', 'challenge' : CryptoJS.enc.$what_return_type_string.stringify(CryptoJS.Hmac$what_hash_string("$what_challenge","$site_secret"))}),dataType  : 'json',type : 'post',headers :{ 'X-CSRF-Protect' : '$csrf'}});</script>
 EOT;
         Context::loadFile(array('https://cdn.jsdelivr.net/crypto-js/3.1.2/components/core-min.js','head','',1));
         Context::loadFile(array('https://cdn.jsdelivr.net/crypto-js/3.1.2/components/enc-base64-min.js','head','',1));
