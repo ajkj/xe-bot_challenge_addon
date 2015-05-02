@@ -75,9 +75,9 @@ if( $called_position ==='before_module_init')
             || $this->act === 'procBoardInsertComment'))
     {
 
-        context::close();
+        //context::close();
         header('x-debug-info: SPAM DETECT');
-        echo('<h1> 500 Internal ERROR XE</h1>');
+       // echo('<h1> 500 Internal ERROR XE</h1>');
 
     }
 
