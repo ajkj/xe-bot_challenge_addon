@@ -193,7 +193,7 @@ elseif($called_position === 'before_display_content')
             $js = <<<EOT
         <script>
         (function(){
-        if(typeof CryptoJS !== 'object'){ document.write('<script src="./addons/bot_challenge/backup.js"></script>'); }
+        if(typeof CryptoJS === 'undefined'){ document.write('<script src="./addons/bot_challenge/backup.js"></script>'); }
         "use strict";
         var r = CryptoJS.enc.$what_return_type_string.stringify(CryptoJS.Hmac$what_hash_string("$what_challenge","$addon_info->site_secret"));
         var s = {
@@ -211,7 +211,7 @@ elseif($called_position === 'before_display_content')
         // 한줄로 압축해서 보내기
 */
         $js = <<<EOT
-	    <script> if(typeof CryptoJS !=='object'){document.write(decodeURI('%3Cscript%20src=%22$backup_url%22%3E%3C/script%3E'));};</script><script>jQuery.ajax('$default_url', s = {data : jQuery.param({ 'act' : 'procBot_challengeTest', 'challenge' : CryptoJS.enc.$what_return_type_string.stringify(CryptoJS.Hmac$what_hash_string("$what_challenge","$addon_info->site_secret"))}),dataType  : 'json',type : 'post',headers :{ 'X-CSRF-Protect' : '$csrf'}});</script>
+	    <script> if(typeof CryptoJS === 'undefined'){document.write(decodeURI('%3Cscript%20src=%22$backup_url%22%3E%3C/script%3E'));};</script><script>jQuery.ajax('$default_url', s = {data : jQuery.param({ 'act' : 'procBot_challengeTest', 'challenge' : CryptoJS.enc.$what_return_type_string.stringify(CryptoJS.Hmac$what_hash_string("$what_challenge","$addon_info->site_secret"))}),dataType  : 'json',type : 'post',headers :{ 'X-CSRF-Protect' : '$csrf'}});</script>
 EOT;
         Context::loadFile(array('https://cdn.jsdelivr.net/crypto-js/3.1.2/components/core-min.js','head','',1));
         Context::loadFile(array('https://cdn.jsdelivr.net/crypto-js/3.1.2/components/enc-base64-min.js','head','',1));
