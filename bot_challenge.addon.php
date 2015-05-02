@@ -45,7 +45,7 @@ if( $called_position ==='before_module_init')
         }
         elseif($_SESSION[$self_addon_name]->return_type === 'Base64')
         {
-            $server_test = base64_encode(hash_hmac($algo, $_SESSION[$self_addon_name]->challenge, $addon_info->site_secret,true));
+            $server_test = base64_encode(hash_hmac($algo, $_SESSION[$self_addon_name]->challenge, $addon_info->site_secret, true));
         }
 
 
