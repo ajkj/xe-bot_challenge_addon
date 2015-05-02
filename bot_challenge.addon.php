@@ -70,9 +70,11 @@ if( $called_position ==='before_module_init')
             || $this->act === 'procBoardInsertComment'))
     {
 
-        context::close();
+        header('x-debug-info: status'.isset($_SESSION[$self_addon_name]->status));
+        header('x-debug-info: isset'.$_SESSION[$self_addon_name]->status);
+        //context::close();
         header('X-ERROR: BTAS', true, 500);
-        echo('<h1> 500 Internal ERROR XE</h1>');
+        //echo('<h1> 500 Internal ERROR XE</h1>');
 
         exit();
 
@@ -189,10 +191,12 @@ elseif($called_position === 'before_display_content')
         if(substr_compare($default_url, '/', -1) !== 0)
         {
             $default_url = $default_url.'/';
+            header('x-debug-info: x-'.$default_url);
         }
 
 
         $backup_url = $default_url.'addons/bot_challenge/backup.js';
+        header('x-debug-info: x-'.$default_url);
 
 /*
 

@@ -5,7 +5,7 @@
         이용자에게 불편함을 주는 CAPTCHA 없이 간편하게 악성 스팸봇을 차단합니다.
         Javascript를 이용하여 해당 접속자가 악성 스팸봇인지 확인합니다.
     </description>
-    <version>1.0.2</version>
+    <version>1.0.2-debug2</version>
     <date>2013-05-02</date>
     <author email_address="thename@requery.me" link="http://github.com/ajkj/xe-bot_challenge_addon">
         <name xml:lang="ko">ajkj</name>
