@@ -184,15 +184,9 @@ elseif($called_position === 'before_display_content')
         $what_challenge = $_SESSION[$self_addon_name]->challenge;
 
 
-        $default_url = Context::getDefaultUrl();
+        $request_uri = Context::getRequestUri();
 
-        if(substr_compare($default_url, '/', -1) !== 0)
-        {
-            $default_url = $default_url.'/';
-        }
-
-
-        $backup_url = $default_url.'addons/bot_challenge/backup.js';
+        $backup_url = $request_uri.'addons/bot_challenge/backup.js';
         $site_secret = $addon_info->site_secret;
 
 /*
@@ -210,7 +204,7 @@ elseif($called_position === 'before_display_content')
             headers :{ 'X-CSRF-Protect' : '$csrf'
             }
         };
-        jQuery.ajax('$default_url', s);
+        jQuery.ajax('$request_uri', s);
         })();
         </script>
         EOT;
@@ -218,7 +212,7 @@ elseif($called_position === 'before_display_content')
         // 한줄로 압축해서 보내기
 */
         $js = <<<EOT
-	    <script> if(typeof CryptoJS === 'undefined'){document.write(decodeURI('%3Cscript%20src=%22$backup_url%22%3E%3C/script%3E'));};</script><script>jQuery.ajax('$default_url', s = {data : jQuery.param({ 'act' : 'procBot_challengeTest', 'challenge' : CryptoJS.enc.$what_return_type_string.stringify(CryptoJS.Hmac$what_hash_string("$what_challenge","$site_secret"))}),dataType  : 'json',type : 'post',headers :{ 'X-CSRF-Protect' : '$csrf'}});</script>
+	    <script> if(typeof CryptoJS === 'undefined'){document.write(decodeURI('%3Cscript%20src=%22$backup_url%22%3E%3C/script%3E'));};</script><script>jQuery.ajax('$request_uri', s = {data : jQuery.param({ 'act' : 'procBot_challengeTest', 'challenge' : CryptoJS.enc.$what_return_type_string.stringify(CryptoJS.Hmac$what_hash_string("$what_challenge","$site_secret"))}),dataType  : 'json',type : 'post',headers :{ 'X-CSRF-Protect' : '$csrf'}});</script>
 EOT;
         Context::loadFile(array('https://cdn.jsdelivr.net/crypto-js/3.1.2/components/core-min.js','head','',1));
         Context::loadFile(array('https://cdn.jsdelivr.net/crypto-js/3.1.2/components/enc-base64-min.js','head','',1));
