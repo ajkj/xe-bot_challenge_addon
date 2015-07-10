@@ -9,6 +9,17 @@ if( $called_position ==='before_module_init')
         $addon_info->site_secret = 'a';
     }
 
+    $no_spam_target_act = array(
+        'procMemberInsert',
+        'procBoardInsertDocument',
+        'procBoardInsertComment',
+        'procMemberFindAccount',
+        'procIssuetrackerInsertIssue',
+        'procIssuetrackerInsertHistory',
+        'procTextyleInsertComment',
+        'procCommunicationSendMessage',
+    );
+
     // Bot Challenge 인 경우
     if($this->act === 'procBot_challengeTest')
     {
@@ -62,17 +73,16 @@ if( $called_position ==='before_module_init')
     }
     // 인증이 되지 않은 상태인데도 불구하고, 글을 작성하거나, 회원가입을 시도하거나, 코멘트 작성을 시도하면
     // 중단.
+
     elseif( (isset($_SESSION[$self_addon_name]->status) === false
             || $_SESSION[$self_addon_name]->status === false)
         &&
-        ($this->act === 'procMemberInsert'
-            ||$this->act === 'procBoardInsertDocument'
-            || $this->act === 'procBoardInsertComment'))
+        (in_array($this->act,$no_spam_target_act) === true))
     {
 
         context::close();
         header('x-anti-spam: spam blocked',true, 500);
-        echo('<h1> 500 Internal ERROR XE</h1>');
+        echo('<h1> 500 Internal ERROR XE</h1><h3>please contact admin</h3>');
 
         exit();
 
@@ -99,7 +109,7 @@ elseif($called_position === 'before_display_content')
 
     // 이미 challenge에 통과했으면 나갑니다.
     if (isset($_SESSION[$self_addon_name]->status) === true && $_SESSION[$self_addon_name]->status === true){
-        Context::addHtmlHeader("<!-- T-S --->");
+        Context::addHtmlHeader("<!-- T-S -->");
         return;
     }
 
